@@ -1,0 +1,34 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.row-login {
+
+    margin-top: 10% !important;
+
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .row-login {
+        margin-top: 20% !important;
+    }
+
+}
+
+@media only screen and (max-width: 568px) {
+    
+    .row-login {
+        margin-top: 25% !important;
+    }
+
+}
+
+@media only screen and (max-width: 422px) {
+    
+    .row-login {
+        margin-top: 35% !important;
+    }
+
+}
