@@ -81,11 +81,13 @@ if (isset($_POST['simpan'])) {
 
                                     <?php
 
+                                    $hariIni = date('d F Y');
+
                                     $no = 1;
 
                                     $id_user = $_SESSION['id'];
                                     
-                                    $query = mysqli_query($conn, "SELECT * FROM todos WHERE id_user = '$id_user' AND selesai = '0' ORDER BY tgl ASC, prioritas");
+                                    $query = mysqli_query($conn, "SELECT * FROM todos WHERE id_user = '$id_user' AND selesai = '0' AND tgl = '$hariIni' ORDER BY tgl ASC");
 
                                     while ($data = mysqli_fetch_assoc($query)) {
 
@@ -95,9 +97,62 @@ if (isset($_POST['simpan'])) {
                                                 <td class="col-1"><?= $no++ ?></td>
                                                 <td class="col-4"><?= $data['judul']; ?></td>
                                                 <td class="col-3"><?= $data['tgl']; ?></td>
-                                                <td class="col-2"><?= ucwords($data['prioritas']) ?></td>
+                                                <?php
+                                                    
+                                                    if ($data['prioritas'] === 'tinggi') {
+
+                                                ?>
+                                                
+                                                    <td class="col-2">
+                                                        <span class="badge rounded-pill bg-danger">Tinggi</span>
+                                                    </td>
+                                                    
+                                                <?php 
+                                                
+                                                    } elseif($data['prioritas'] === 'sedang') {
+
+                                                ?>
+
                                                 <td class="col-2">
-                                                    <a href="./selesai.php?id=<?= $data['id'] ?>" class="btn btn-sm btn-outline-success">Selesai</a>
+                                                    <span class="badge rounded-pill bg-warning">Sedang</span>
+                                                </td>
+
+                                                <?php 
+                                                
+                                                    } else {
+                                                
+                                                ?>
+
+                                                <td class="col-2">
+                                                    <span class="badge rounded-pill bg-primary">Rendah</span>
+                                                </td>
+
+                                                <?php 
+                                                
+                                                    }
+                                                
+                                                ?>
+                                                <td class="col-2">
+                                                    <?php 
+
+                                                        $hariIni = date('d F Y');
+                                                    
+                                                        if ($hariIni < $data['tgl']) {
+                                                            
+                                                    ?>
+
+                                                    <button class="btn btn-sm btn-outline-danger" disabled>Selesai</button>
+
+                                                    <?php } else if($hariIni > $data['tgl']) { ?>
+
+                                                    <button class="btn btn-sm btn-outline-warning" disabled>Tertunda</button>
+
+                                                    <?php } else { ?>
+
+                                                        <a href="./selesai.php?id=<?= $data['id'] ?>" class="btn btn-sm btn-outline-success">Selesai</a>
+
+                                                    <?php } ?>
+
                                                 </td>
                                             </tr>
 
@@ -123,7 +178,42 @@ if (isset($_POST['simpan'])) {
                                                     <td class="col-1"><?= $no++ ?></td>
                                                     <td class="col-4"><?= $data['judul']; ?></td>
                                                     <td class="col-3"><?= $data['tgl']; ?></td>
-                                                    <td class="col-2"><?= ucwords($data['prioritas']) ?></td>
+                                                    <?php
+                                                    
+                                                        if ($data['prioritas'] === 'tinggi') {
+
+                                                    ?>
+                                                    
+                                                        <td class="col-2">
+                                                            <span class="badge rounded-pill bg-danger">Tinggi</span>
+                                                        </td>
+                                                      
+                                                    <?php 
+                                                    
+                                                        } elseif($data['prioritas'] === 'sedang') {
+
+                                                    ?>
+
+                                                    <td class="col-2">
+                                                        <span class="badge rounded-pill bg-warning">Sedang</span>
+                                                    </td>
+
+                                                    <?php 
+                                                    
+                                                        } else {
+                                                    
+                                                    ?>
+
+                                                    <td class="col-2">
+                                                        <span class="badge rounded-pill bg-primary">Rendah</span>
+                                                    </td>
+
+                                                    <?php 
+                                                    
+                                                        }
+                                                    
+                                                    ?>
+                                                    
                                                     <td class="col-2">
                                                         <button type="button" class="btn btn-sm btn-success" disabled>Selesai</button>
                                                     </td>
