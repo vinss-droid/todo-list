@@ -52,18 +52,35 @@ if (isset($_POST['simpan'])) {
 
     <div class="container">
         <div class="row justify-content-center">
-            <h1 class="text-center fw-bold mt-5">TO DO LIST</h4>
+            <h1 class="text-center fw-bold mt-5">TODO LIST</h4>
 
                 <div class="col-sm-12 col-md-12 col-lg-10">
                     <div class="card shadow-lg bg-dark">
+                        <div class="card-header">
+                            <h3 class="text-center">
+                                TODO LIST <?= isset($_GET['date']) ? date('d F Y', strtotime(htmlspecialchars($_GET['date'], ENT_QUOTES, 'UTF-8'))) : date('d F Y') ?>
+                            </h3>
+                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                             
                                 <div class="container">
-                                    <button type="button" class="btn btn-primary btn-sm my-3" id="tambah">Tambah</button>
-                                    <button class="btn btn-sm btn-success" id="riwayat">Todo List Selesai</button>
-                                    <button class="btn btn-sm btn-info d-none" id="sekarang">Todo List Sekarang</button>
-                                    <a href="./logout.php" class="btn btn-danger btn-sm my-3">Keluar</a>
+                                    <div class="row my-3">
+                                        <div class="col-4">
+                                            <div class="input-group input-group-sm">
+                                                <input type="date" class="form-control" id="date">
+                                                <button class="btn btn-warning btn-sm" id="filter">
+                                                    Filter
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-primary btn-sm" id="tambah">Tambah</button>
+                                            <button class="btn btn-sm btn-success" id="riwayat">Todo List Selesai</button>
+                                            <button class="btn btn-sm btn-info d-none" id="sekarang">Todo List Sekarang</button>
+                                            <a href="./logout.php" class="btn btn-danger btn-sm">Keluar</a>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <table class="table table-hover text-center text-white table-dark">
@@ -81,7 +98,7 @@ if (isset($_POST['simpan'])) {
 
                                     <?php
 
-                                    $hariIni = date('d F Y');
+                                    $hariIni = isset($_GET['date']) ? date('d F Y', strtotime(htmlspecialchars($_GET['date'], ENT_QUOTES, 'UTF-8'))) : date('d F Y');
 
                                     $no = 1;
 
@@ -164,11 +181,13 @@ if (isset($_POST['simpan'])) {
 
                                         <?php
 
+                                        $hariIni = isset($_GET['date']) ? date('d F Y', strtotime(htmlspecialchars($_GET['date'], ENT_QUOTES, 'UTF-8'))) : date('d F Y');
+
                                         $no = 1;
 
                                         $id_user = $_SESSION['id'];
-                                        
-                                        $query = mysqli_query($conn, "SELECT * FROM todos WHERE id_user = '$id_user' AND selesai = '1' ORDER BY tgl ASC, prioritas");
+
+                                        $query = mysqli_query($conn, "SELECT * FROM todos WHERE id_user = '$id_user' AND selesai = '1' AND tgl = '$hariIni' ORDER BY tgl ASC");
 
                                         while ($data = mysqli_fetch_assoc($query)) {
 
@@ -280,6 +299,10 @@ if (isset($_POST['simpan'])) {
     <script>
         $(document).ready(function() {
 
+            let dateValue = getQueryParam('date')
+
+            $('#date').val(dateValue)
+
             $('#tambah').click(function() {
                 $('#Mtambah').modal('show');
             })
@@ -303,6 +326,21 @@ if (isset($_POST['simpan'])) {
                 $('#listSekarang').removeClass('d-none');
 
             });
+
+            $('#filter').click(function () {
+                let protocol = window.location.protocol
+                let hostname = window.location.hostname
+                let pathname = window.location.pathname
+
+                window.location.href = `${protocol}//${hostname}${pathname}?date=` + $('#date').val()
+            })
+
+            function getQueryParam(param) {
+                let url = new URL(window.location.href)
+                let params = new URLSearchParams(url.search)
+
+                return params.get(param)
+            }
         })
     </script>
 
